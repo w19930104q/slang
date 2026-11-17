@@ -135,6 +135,22 @@ Sometimes you'll want to pause for a beat without playing a note. This is called
 
 In addition to the rhythm notation you can also use **number values**, which correspond to _seconds_. Slang runs at a tempo of 120 beats per minute, which means that a whole note — `1n` — is exactly `2` seconds long. Writing `(rhythm [2])` and `(rhythm [1n])` produce exactly the same rhythm. This is useful in other functions like [`(adsr)`](https://github.com/kylestetz/slang#amp-envelope---adsr-osc-attack-001-decay-0-sustain-1-release-005) where the attack, decay, and release all accept a rhythm value.
 
+## Ranges
+
+A range is a shorthand for generating a list: `[a..b]`. Ranges have precise, deterministic semantics:
+
+**Note ranges** like `[E3..C4]` are _closed_ chromatic intervals — both endpoints are included, and every note range contains at least one note.
+
+- `[E3..C4]` → `E3 F3 F#3 G3 G#3 A3 A#3 B3 C4` (ascending)
+- `[C4..E3]` → `C4 B3 A#3 A3 G#3 G3 F#3 F3 E3` (descending)
+- `[E3..E3]` → `E3` (a single note, _not_ an empty list)
+
+All generated notes are spelled with **sharps**. Sharp input keeps its spelling (`[F#3..A#3]` → `F#3 G3 G#3 A3 A#3`), and flat input is accepted and normalized (`[Gb3..Bb3]` → `F#3 G3 G#3 A3 A#3`). Octaves may be negative, so the full MIDI range is expressible: `[C-1..G9]`.
+
+**Numeric ranges** like `[1..5]` are _half-open_ intervals — they count from `a` toward `b` without including `b`, descending when `a > b`. The **empty interval** is a numeric range whose endpoints are equal: `[3..3]` produces an empty list. An empty list used in `notes` simply plays no notes (the clock keeps running, as if every beat were a rest).
+
+**Transposition** (see [`(transpose)`](https://github.com/kylestetz/slang#transpose---transpose-amount-list)) is by whole semitones and clamps to the MIDI range `0`–`127`: transposing below the bottom lands on `C-1` and above the top on `G9`, so extreme negative or positive amounts always produce a stable, playable note.
+
 ## Syntax
 
 Functions are contained within parentheses, much like in Clojure. The first keyword in a function is the **function name**, which is followed by all of its arguments. Any argument can be a primitive value or a list (neat!); if it's a list, Slang will take one value at a time and loop back to the beginning when it reaches the end. Check out the Reference section for lots of usage examples.
@@ -365,7 +381,7 @@ play @bass (notes (shuffle (chord phrygian e3)))
 
 #### Transpose - `(transpose <amount> <list>)`
 
-Transpose a list of numbers or notes by an amount.
+Transpose a list of numbers or notes by an amount. Notes are transposed by whole semitones (the amount is rounded down), spelled with sharps, and clamped to the MIDI range — transposing below the bottom lands on `C-1`, above the top on `G9`.
 
 `amount`: number
 

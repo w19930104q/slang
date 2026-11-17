@@ -1,4 +1,3 @@
-import { Note } from 'tonal';
 import Block from './Block';
 import context from '../helpers/context';
 import mtof from '../helpers/mtof';

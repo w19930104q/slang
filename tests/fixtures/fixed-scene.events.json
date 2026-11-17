@@ -1,0 +1,151 @@
+[
+  {
+    "line": 0,
+    "sound": "@synth",
+    "events": [
+      {
+        "start": 0.01,
+        "stop": 0.26,
+        "note": "E3"
+      },
+      {
+        "start": 0.26,
+        "stop": 0.51,
+        "note": "F3"
+      },
+      {
+        "start": 0.51,
+        "stop": 0.76,
+        "note": "F#3"
+      },
+      {
+        "start": 0.76,
+        "stop": 1.01,
+        "note": "G3"
+      },
+      {
+        "start": 1.01,
+        "stop": 1.26,
+        "note": "G#3"
+      },
+      {
+        "start": 1.26,
+        "stop": 1.51,
+        "note": "A3"
+      },
+      {
+        "start": 1.51,
+        "stop": 1.76,
+        "note": "A#3"
+      },
+      {
+        "start": 1.76,
+        "stop": 2.01,
+        "note": "B3"
+      }
+    ]
+  },
+  {
+    "line": 1,
+    "sound": "@synth",
+    "events": [
+      {
+        "start": 0.01,
+        "stop": 0.51,
+        "note": "C3"
+      },
+      {
+        "start": 0.51,
+        "stop": 1.01,
+        "note": "B2"
+      },
+      {
+        "start": 1.01,
+        "stop": 1.51,
+        "note": "A#2"
+      },
+      {
+        "start": 1.51,
+        "stop": 2.01,
+        "note": "A2"
+      }
+    ]
+  },
+  {
+    "line": 2,
+    "sound": "@synth",
+    "events": [
+      {
+        "start": 0.01,
+        "stop": 0.26,
+        "note": "F#3"
+      },
+      {
+        "start": 0.51,
+        "stop": 0.76,
+        "note": "G3"
+      },
+      {
+        "start": 1.01,
+        "stop": 1.26,
+        "note": "G#3"
+      },
+      {
+        "start": 1.51,
+        "stop": 1.76,
+        "note": "A3"
+      }
+    ]
+  },
+  {
+    "line": 3,
+    "sound": "@synth",
+    "events": [
+      {
+        "start": 0.01,
+        "stop": 0.26,
+        "note": "C-1"
+      },
+      {
+        "start": 0.26,
+        "stop": 0.51,
+        "note": "C-1"
+      },
+      {
+        "start": 0.51,
+        "stop": 0.76,
+        "note": "C-1"
+      },
+      {
+        "start": 0.76,
+        "stop": 1.01,
+        "note": "C-1"
+      },
+      {
+        "start": 1.01,
+        "stop": 1.26,
+        "note": "C-1"
+      },
+      {
+        "start": 1.26,
+        "stop": 1.51,
+        "note": "C-1"
+      },
+      {
+        "start": 1.51,
+        "stop": 1.76,
+        "note": "C-1"
+      },
+      {
+        "start": 1.76,
+        "stop": 2.01,
+        "note": "C-1"
+      }
+    ]
+  },
+  {
+    "line": 4,
+    "sound": "@synth",
+    "events": []
+  }
+]

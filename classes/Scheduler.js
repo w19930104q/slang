@@ -1,16 +1,12 @@
 import context from '../helpers/context';
-import { parseArgument, rhythmMap } from '../helpers/parseArguments';
-import List from '../helpers/List';
+import { PatternClock } from '../helpers/patternClock';
 
 export default class Scheduler {
 	constructor(patterns) {
-		// Start with defaults for
-		// each of the patterns.
-
-		// a list of rhythm lengths
-		this.rhythmPattern = parseArgument('8n');
-		// a List of notes
-		this.notePattern = parseArgument(69);
+		// The pure pattern logic (rhythm & note patterns,
+		// rests, empty lists) lives in PatternClock so it
+		// can be shared with the deterministic test suite.
+		this.clock = new PatternClock(patterns);
 
 		// Store a callback to the Sound here.
 		this.tickCallback = null;
@@ -24,26 +20,6 @@ export default class Scheduler {
 		this.currentTime = null;
 		this.lookahead = .04;
 		this.startTime = null;
-
-		// Loop through whatever we got and overwrite
-		// the default patterns. All three of these
-		// functions only accept one argument, which
-		// is why we're pulling arguments[0] out.
-		patterns.forEach((pattern) => {
-			switch (pattern.function) {
-				case 'rhythm':
-					// We have to special-case rhythm argument parsing
-					// for now because the xoxoxo-style pattern is not
-					// recognized by the parser as a List.
-					this.rhythmPattern = parseArgument(pattern.arguments[0])
-					break;
-				case 'notes':
-					this.notePattern = parseArgument(pattern.arguments[0]);
-					break;
-				default:
-					break;
-			}
-		});
 	}
 
 	tick(callback) {
@@ -56,33 +32,22 @@ export default class Scheduler {
 
 		this.interval = setInterval(() => {
 			while (this.currentTime < context.currentTime + this.lookahead) {
-				// The tick length could be a number or a string that starts
-				// with 'r', indicating a rest.
-				let nextTickLength = this.rhythmPattern.next();
-				// Let's start by assuming it's not a rest.
-				let rest = false;
-				// if it's a string and it starts with R, it is a rest.
-				if (typeof nextTickLength === 'string' && nextTickLength.charAt(0).toLowerCase() === 'r') {
-					rest = true;
-					// Convert it into the appropriate rhythm.
-					nextTickLength = rhythmMap[nextTickLength.substr(1)];
-				}
-				// We're only ticking on beats that aren't rests.
-				if (!rest) {
-					const nextNote = this.notePattern.next();
+				const { length, note } = this.clock.nextTick();
+				// We're only ticking on beats that aren't rests
+				// (a null note is a rest or an empty pattern).
+				if (note !== null && note !== undefined) {
 					// schedule stuff!
 					this.tickCallback(
 						// start time
 						this.currentTime,
 						// stop time
-						// this.currentTime + this.lengthPattern.next(),
-						this.currentTime + nextTickLength,
+						this.currentTime + length,
 						// note
-						nextNote
+						note
 					);
 				}
 				// go to the next beat in the clock
-				this.currentTime += nextTickLength;
+				this.currentTime += length;
 			}
 		}, 40);
 	}

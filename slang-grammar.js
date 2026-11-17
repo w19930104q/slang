@@ -98,6 +98,17 @@ Sound {
   */
 
   list = "[" listOf<soundArgument, delimiter> "]"
+  /*
+    RANGES
+    Numeric ranges [a..b] are half-open: they count from
+    a toward b (exclusive), descending when a > b, and
+    produce the empty interval (an empty list) when the
+    endpoints are equal. Note ranges [A3..B3] are closed
+    chromatic intervals: equal endpoints produce a single
+    note and descending endpoints produce a descending
+    sequence.
+  */
+
   range = "[" int ".." int "]" -- number
     | "[" note ".." note "]" -- note
 
@@ -109,9 +120,24 @@ Sound {
   
   int = "-"? digit+
 
-  note = letter "#" digit+ -- sharp
-    | letter "b" digit+ -- flat
-    | alnum+ -- major
+  /*
+    NOTES
+    A note is a letter A-G (either case), an optional
+    accidental (# or b) and an integer octave. The octave
+    may be negative so the full MIDI range (C-1..G9) is
+    expressible. Anything else that is a bare word (e.g.
+    function names like 'osc' or scale names like 'lydian')
+    falls through to 'word', preserving the original
+    function-call syntax.
+  */
+
+  note = noteLetter "#" octave -- sharp
+    | noteLetter "b" octave -- flat
+    | noteLetter octave -- natural
+    | alnum+ -- word
+
+  noteLetter = "A".."G" | "a".."g"
+  octave = "-"? digit+
   
   rhythm = "r"? digit+ letter
 }

@@ -1,7 +1,7 @@
-import { Note } from 'tonal';
 import Block from './Block';
 import context from '../helpers/context';
 import mtof from '../helpers/mtof';
+import { noteToMidi, clampMidi } from '../helpers/noteUtils';
 import { parseArgument } from '../helpers/parseArguments';
 
 const typeMap = {
@@ -34,9 +34,12 @@ class Osc extends Block {
 
 		osc.type = typeMap[this.type.next()];
 
-		let noteMidiValue = typeof note === 'string' ? Note.midi(note) : note;
+		let noteMidiValue = typeof note === 'string' ? noteToMidi(note) : note;
+		// Clamp to the MIDI range so that out-of-range notes
+		// (e.g. from extreme detune values) produce a stable
+		// boundary frequency instead of NaN.
 		osc.frequency.setValueAtTime(
-			Note.freq(Note.fromMidi(noteMidiValue + this.detune.next())),
+			mtof(clampMidi(noteMidiValue + this.detune.next())),
 			context.currentTime,
 			0
 		);

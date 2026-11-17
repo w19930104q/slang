@@ -1,10 +1,6 @@
-import { transpose as tonalTranspose } from 'tonal-distance';
-import { fromSemitones } from "tonal-interval"
 import FunctionCall from './FunctionCall';
 import { parseArgument, rhythmMap } from '../helpers/parseArguments';
-
-window.tonalTranspose = tonalTranspose;
-window.fromSemitones = fromSemitones;
+import { isNoteName, transposeNote } from '../helpers/noteUtils';
 
 export default class Transpose extends FunctionCall {
 	constructor(functionObject) {
@@ -41,11 +37,19 @@ export default class Transpose extends FunctionCall {
 		}
 
 		// Now if this is a string that means it's a note value.
-		// The Scale library can help us transpose.
+		// Transposition is by whole semitones, spelled with
+		// sharps, and clamped to the MIDI range (C-1..G9) so
+		// that extreme negative or positive amounts land on a
+		// stable boundary note instead of an unparseable one.
 		if (typeof nextValue === 'string') {
-			return tonalTranspose(
+			if (!isNoteName(nextValue)) {
+				// Not a note (e.g. a waveform name); leave it
+				// alone rather than producing garbage.
+				return nextValue;
+			}
+			return transposeNote(
 				nextValue,
-				fromSemitones(Math.floor(this.amount.next()))
+				Math.floor(this.amount.next())
 			);
 		}
 

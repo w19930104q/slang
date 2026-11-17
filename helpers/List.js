@@ -33,6 +33,11 @@ class List {
 		return this.values;
 	}
 	next() {
+		// An empty list (e.g. the empty interval [5..2]) is a
+		// valid, deterministic value: it yields `null`, which
+		// the scheduler treats as a rest (no note event, but
+		// the clock keeps advancing).
+		if (!this.values.length) return null;
 		const value = this.values[this._currentIndex].next();
 		this._currentIndex = (this._currentIndex + 1) % this.values.length;
 		return value;
